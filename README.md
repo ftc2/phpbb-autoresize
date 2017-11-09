@@ -1,0 +1,1 @@
+ftc2/autoresize/README.md

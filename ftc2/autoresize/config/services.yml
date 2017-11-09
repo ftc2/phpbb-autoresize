@@ -1,0 +1,8 @@
+services:
+    ftc2.autoresize.listener:
+        class: ftc2\autoresize\event\main_listener
+        arguments:
+            - '@config'
+            - '@user'
+        tags:
+            - { name: event.listener }
