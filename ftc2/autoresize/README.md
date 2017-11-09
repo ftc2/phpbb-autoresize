@@ -25,6 +25,8 @@ If you see plupload triggering `413 (Request Entity Too Large)`, then [try confi
 
 Automatically resize (shrink) image attachments server-side upon upload.
 
+![screenshot](https://i.imgur.com/XlSvRZY.png)
+
 Hooks to the `core.modify_uploaded_file` PHP event.
 
 Note that phpBB supports [client-side image resizing via plupload](http://www.plupload.com/docs/v2/Image-Resizing-on-Client-Side), a feature that should be better advertised...
@@ -41,6 +43,8 @@ If image quality is important to you and your server can handle it, or if you do
 From the ACP, you can trigger resizing based on uploads exceeding max filesize, max dimensions (width,height), or either one.
 
 Regardless of how resizing is triggered, the image will be shrunk to not exceed specified max dimensions. Shrunk image is not *guaranteed* to be smaller than the max filesize.
+
+You may specify ImageMagick parameters if you wish as well.
 
 This extension also includes a feature to log debug messages to a text file.
 
