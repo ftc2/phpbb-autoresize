@@ -38,6 +38,16 @@ Resizing server-side with ImageMagick produces significantly better results (and
 
 If image quality is important to you and your server can handle it, or if you don't have people constantly uploading files, then this might be an attractive solution.
 
+Example:
+
+phpBB built-in resizing (plupload):
+![plupload_ex_](https://i.imgur.com/uQW8SfP.jpg)
+
+ImageMagick resizing with this extension with default -resize parameters:
+![imagick_ex](https://i.imgur.com/Os8njgm.jpg)
+
+The second image has a slightly smaller filesize.
+
 ## Settings
 
 From the ACP, you can trigger resizing based on uploads exceeding max filesize, max dimensions (width,height), or either one.
