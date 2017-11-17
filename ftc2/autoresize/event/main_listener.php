@@ -76,10 +76,7 @@ class main_listener implements EventSubscriberInterface
 	 */
 	public function resize_image_attachment($event)
 	{		
-		if ($this->config['ftc2_autoresize_debug'])
-		{
-			$time1 = microtime(true);
-		}
+		$time1 = microtime(true);
 		$this->dbg_log('INFO: [' . date('Y-m-d h:i:sa') . '] ' . $this->user->data['username'] . ': ' . $event['filedata']['real_filename']);
 
 		/**
@@ -87,13 +84,13 @@ class main_listener implements EventSubscriberInterface
 		 */
 		if (!$this->config['img_imagick'])
 		{
-			$this->dbg_log('ERROR: ImageMagick not installed. install it and make sure phpbb is configured its correct path.');
+			$this->dbg_log('ERROR: ImageMagick not installed. install it and make sure phpBB is configured with its correct path.');
 			return false;
 		}
 
-		if (!function_exists('passthru'))
+		if (!function_exists('exec'))
 		{
-			$this->dbg_log('ERROR: PHP passthru() function not found.');
+			$this->dbg_log('ERROR: PHP exec() function not found.');
 			return false;
 		}
 
@@ -102,16 +99,16 @@ class main_listener implements EventSubscriberInterface
 			$this->dbg_log("WARNING: phpBB max_filesize <= ftc2_autoresize_filesize, so a resize will never be triggered. consider setting max_filesize to 0 in phpBB's attachment settings if phpBB isn't letting you upload large files.");
 		}
 
-		if (!$event['is_image'])
-		{
-			$this->dbg_log("ERROR: not an image.");
-			return false;
-		}
-
 
 		/**
 		 * get image info
 		 */
+		if (!$event['is_image'])
+		{
+			$this->dbg_log("ERROR: {$event['filedata']['real_filename']} is not an image.");
+			return false;
+		}
+
 		$file_path = join('/', array(trim($this->config['upload_path'], '/'), trim($event['filedata']['physical_filename'], '/')));
 		$dimensions = @getimagesize($file_path);
 
@@ -165,12 +162,10 @@ class main_listener implements EventSubscriberInterface
 		// mogrify $ftc2_autoresize_imparams 600x950> img_path
 		$imagick_cmd = escapeshellcmd($imagick_path . 'mogrify' . ((defined('PHP_OS') && preg_match('#^win#i', PHP_OS)) ? '.exe' : '') . ' ' . $this->config['ftc2_autoresize_imparams'] . ' ' . $this->config['ftc2_autoresize_width'] . 'x' . $this->config['ftc2_autoresize_height'] . '> "' . str_replace('\\', '/', $file_path) . '"');
 		$this->dbg_log("INFO: $imagick_cmd");
-		@passthru($imagick_cmd);
+		@exec($imagick_cmd);
 
-		if ($this->config['ftc2_autoresize_debug'])
-		{
-			$this->dbg_log('INFO: resize execution time: ' . (microtime(true) - $time1) . 'ms');
-		}
+		$this->dbg_log('INFO: resized from ' . $event['filedata']['filesize'] . ' B to ' . @filesize($file_path) . ' B');
+		$this->dbg_log('INFO: resize execution time: ' . (microtime(true) - $time1) . 's');
 
 		return true;
 	}
