@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * Auto-Resize Images Server-side. An extension for the phpBB Forum Software package.
+ * Auto-Resize Images & Avatars Server-side. An extension for the phpBB Forum Software package.
  *
- * @copyright (c) 2017, ftc2
+ * @copyright (c) 2018, ftc2
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -16,7 +16,7 @@ namespace ftc2\autoresize\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Auto-Resize Images Server-side Event listener for core.modify_uploaded_file
+ * Auto-Resize Images & Avatars Server-side Event listener
  */
 class main_listener implements EventSubscriberInterface
 {
@@ -26,12 +26,15 @@ class main_listener implements EventSubscriberInterface
 	/* @var \phpbb\user */
 	protected $user;
 
+	/* @var \ftc2\autoresize\core\core_functions */
+	protected $core_functions;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\config\config		$config		Config object
 	 */
-	public function __construct(\phpbb\config\config $config, \phpbb\user $user)
+	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \ftc2\autoresize\core\core_functions $core_functions)
 	{
 		$this->config = $config;
 		$this->user = $user;
@@ -40,133 +43,41 @@ class main_listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.modify_uploaded_file' => 'resize_image_attachment',
+			'core.modify_uploaded_file' => 'image_attachment_handler',
+			'core.avatar_driver_upload_move_file_before' => 'avatar_handler',
 		);
 	}
 
 	/**
-	 * Logger for debugging
-	 *
-	 * @param $err	Message to log
-	 * @param $verbosity	0: log as-is, 1: use print_r(), 2: use var_dump()
-	 */
-	public function dbg_log($err, $verbosity = 0)
-	{
-		if ($this->config['ftc2_autoresize_debug'])
-		{
-			$log_file = 'ftc2_resize_log.txt';
-			if ($verbosity == 1)
-			{
-				$err = print_r($err, true);
-			}
-			elseif ($verbosity == 2)
-			{
-				ob_start();
-				var_dump($err);
-				$err = ob_get_clean();
-			}
-			error_log ($err . "\r\n", 3, $log_file);
-		}
-	}
-
-	/**
-	 * Resize uploaded images if they're too big
+	 * Image attachment handler
 	 *
 	 * @param \phpbb\event\data $event	Event object [filedata, is_image]
 	 */
-	public function resize_image_attachment($event)
-	{		
-		$time1 = microtime(true);
-		$this->dbg_log('INFO: [' . date('Y-m-d h:i:sa') . '] ' . $this->user->data['username'] . ': ' . $event['filedata']['real_filename']);
+	public function image_attachment_handler($event)
+	{
+		$trigger		= $this->config['ftc2_autoresize_i_trigger'];
+		$max_filesize	= $this->config['ftc2_autoresize_i_filesize'];
+		$max_width		= $this->config['ftc2_autoresize_i_width'];
+		$max_height		= $this->config['ftc2_autoresize_i_height'];
+		$imparams		= $this->config['ftc2_autoresize_i_imparams'];
 
-		/**
-		 * pre-checks
-		 */
-		if (!$this->config['img_imagick'])
-		{
-			$this->dbg_log('ERROR: ImageMagick not installed. install it and make sure phpBB is configured with its correct path.');
-			return false;
-		}
+		$core_functions->resize($event, $trigger, $max_filesize, $max_width, $max_height, $imparams);
+	}
 
-		if (!function_exists('exec'))
-		{
-			$this->dbg_log('ERROR: PHP exec() function not found.');
-			return false;
-		}
+	/**
+	 * Avatar handler
+	 *
+	 * @param \phpbb\event\data $event	Event object [filedata, is_image]
+	 */
+	public function avatar_handler($event)
+	{
+		$trigger		= $this->config['ftc2_autoresize_a_trigger'];
+		$max_filesize	= $this->config['ftc2_autoresize_a_filesize'];
+		$max_width		= $this->config['ftc2_autoresize_a_width'];
+		$max_height		= $this->config['ftc2_autoresize_a_height'];
+		$imparams		= $this->config['ftc2_autoresize_a_imparams'];
 
-		if ($this->config['ftc2_autoresize_trigger'] == 'filesize' && $this->config['max_filesize'] != 0 && $this->config['max_filesize'] <= $this->config['ftc2_autoresize_filesize'])
-		{
-			$this->dbg_log("WARNING: phpBB max_filesize <= ftc2_autoresize_filesize, so a resize will never be triggered. consider setting max_filesize to 0 in phpBB's attachment settings if phpBB isn't letting you upload large files.");
-		}
-
-
-		/**
-		 * get image info
-		 */
-		if (!$event['is_image'])
-		{
-			$this->dbg_log("ERROR: {$event['filedata']['real_filename']} is not an image.");
-			return false;
-		}
-
-		$file_path = join('/', array(trim($this->config['upload_path'], '/'), trim($event['filedata']['physical_filename'], '/')));
-		$dimensions = @getimagesize($file_path);
-
-		if ($dimensions === false)
-		{
-			$this->dbg_log("ERROR: {$event['filedata']['real_filename']} has invalid dimensions.");
-			return false;
-		}
-
-		list($width, $height, ) = $dimensions;
-
-		if (empty($width) || empty($height))
-		{
-			$this->dbg_log("ERROR: {$event['filedata']['real_filename']} has invalid dimensions.");
-			return false;
-		}
-
-
-		/**
-		 * resize?
-		 */
-		if ($this->config['ftc2_autoresize_trigger'] == 'filesize' && $event['filedata']['filesize'] > $this->config['ftc2_autoresize_filesize'])
-		{
-			$this->dbg_log('INFO: image filesize too big; resizing.');
-		}
-		elseif ($this->config['ftc2_autoresize_trigger'] == 'dimensions' && ($width > $this->config['ftc2_autoresize_width'] || $height > $this->config['ftc2_autoresize_height']))
-		{
-			$this->dbg_log('INFO: image resolution too big; resizing.');
-		}
-		elseif ($this->config['ftc2_autoresize_trigger'] == 'either' && ($event['filedata']['filesize'] > $this->config['ftc2_autoresize_filesize'] || ($width > $this->config['ftc2_autoresize_width'] || $height > $this->config['ftc2_autoresize_height'])))
-		{
-			$this->dbg_log('INFO: image filesize and/or resolution too big; resizing.');
-		}
-		else
-		{
-			$this->dbg_log('INFO: resize not triggered.');
-			return false;
-		}
-
-
-		/**
-		 * resize!
-		 */
-		$imagick_path = $this->config['img_imagick'];
-
-		if (substr($imagick_path, -1) !== '/')
-		{
-			$imagick_path .= '/';
-		}
-
-		// mogrify $ftc2_autoresize_imparams 600x950> img_path
-		$imagick_cmd = escapeshellcmd($imagick_path . 'mogrify' . ((defined('PHP_OS') && preg_match('#^win#i', PHP_OS)) ? '.exe' : '') . ' ' . $this->config['ftc2_autoresize_imparams'] . ' ' . $this->config['ftc2_autoresize_width'] . 'x' . $this->config['ftc2_autoresize_height'] . '> "' . str_replace('\\', '/', $file_path) . '"');
-		$this->dbg_log("INFO: $imagick_cmd");
-		@exec($imagick_cmd);
-
-		$this->dbg_log('INFO: resized from ' . $event['filedata']['filesize'] . ' B to ' . @filesize($file_path) . ' B');
-		$this->dbg_log('INFO: resize execution time: ' . (microtime(true) - $time1) . 's');
-
+// 		$core_functions->resize($trigger, $max_filesize, $max_width, $max_height, $imparams);
 		return true;
 	}
 }

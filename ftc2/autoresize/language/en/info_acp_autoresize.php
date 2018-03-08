@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * Auto-Resize Images Server-side. An extension for the phpBB Forum Software package.
+ * Auto-Resize Images & Avatars Server-side. An extension for the phpBB Forum Software package.
  *
- * @copyright (c) 2017, ftc2
+ * @copyright (c) 2018, ftc2
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */

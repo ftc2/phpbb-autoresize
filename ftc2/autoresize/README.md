@@ -1,10 +1,10 @@
-# Auto-Resize Images Server-side
+# Auto-Resize Images & Avatars Server-side
 
 ## Installation
 
 Copy the extension to phpBB/ext/ftc2/autoresize
 
-Go to "ACP" > "Customise" > "Extensions" and enable the "Auto-Resize Images Server-side" extension.
+Go to "ACP" > "Customise" > "Extensions" and enable the "Auto-Resize Images & Avatars Server-side" extension.
 
 Requires ImageMagick.
 

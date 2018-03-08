@@ -4,5 +4,11 @@ services:
         arguments:
             - '@config'
             - '@user'
+            - '@ftc2.autoresize.core'
         tags:
             - { name: event.listener }
+    ftc2.autoresize.core:
+        class: ftc2\autoresize\core\core_functions
+        arguments:
+            - '@config'
+            - '@user'
