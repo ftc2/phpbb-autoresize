@@ -3,7 +3,7 @@
  *
  * Auto-Resize Images Server-side. An extension for the phpBB Forum Software package.
  *
- * @copyright (c) 2017, ftc2
+ * @copyright (c) 2019, ftc2
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -39,7 +39,8 @@ class main_module
 			$config->set('ftc2_autoresize_filesize', $request->variable('ftc2_autoresize_filesize', 262144));
 			$config->set('ftc2_autoresize_width', $request->variable('ftc2_autoresize_width', 1000));
 			$config->set('ftc2_autoresize_height', $request->variable('ftc2_autoresize_height', 1000));
-			$config->set('ftc2_autoresize_imparams', $request->variable('ftc2_autoresize_imparams', '-resize'));
+			$config->set('ftc2_autoresize_imparams', $request->variable('ftc2_autoresize_imparams', '-auto-orient -resize'));
+			$config->set('ftc2_autoresize_impath', $request->variable('ftc2_autoresize_impath', '/usr/bin'));
 			$config->set('ftc2_autoresize_debug', $request->variable('ftc2_autoresize_debug', 0));
 
 			trigger_error($user->lang('ACP_AUTORESIZE_SETTING_SAVED') . adm_back_link($this->u_action));
@@ -52,6 +53,7 @@ class main_module
 			'FTC2_AUTORESIZE_HEIGHT'		=> $config['ftc2_autoresize_height'],
 			'FTC2_AUTORESIZE_TRIGGER'		=> $config['ftc2_autoresize_trigger'],
 			'FTC2_AUTORESIZE_IMPARAMS'		=> $config['ftc2_autoresize_imparams'],
+			'FTC2_AUTORESIZE_IMPATH'		=> $config['ftc2_autoresize_impath'],
 			'FTC2_AUTORESIZE_DEBUG'			=> $config['ftc2_autoresize_debug'],
 		));
 	}

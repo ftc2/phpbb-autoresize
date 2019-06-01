@@ -3,7 +3,7 @@
  *
  * Auto-Resize Images Server-side. An extension for the phpBB Forum Software package.
  *
- * @copyright (c) 2017, ftc2
+ * @copyright (c) 2019, ftc2
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -26,6 +26,8 @@ $lang = array_merge($lang, array(
 	'ACP_AUTORESIZE_EITHER'				=> 'Either',
 	'ACP_AUTORESIZE_IMPARAMS'			=> 'ImageMagick parameters',
 	'ACP_AUTORESIZE_IMPARAMS_DESC'		=> 'Command preview',
+	'ACP_AUTORESIZE_IMPATH'			=> 'ImageMagick path',
+	'ACP_AUTORESIZE_IMPATH_DESC'			=> 'Path to ImageMagick installation. The `mogrify` binary must be available there.',
 
 	'ACP_AUTORESIZE_DEBUG_TITLE'		=> 'Debugging',
 	'ACP_AUTORESIZE_DEBUG'				=> 'Enable?',

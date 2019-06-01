@@ -3,8 +3,8 @@
     "type": "phpbb-extension",
     "description": "Automatically resize (shrink) image attachments server-side upon upload. Requires ImageMagick.",
     "homepage": "",
-    "version": "1.0.3",
-    "time": "2017-11-08",
+    "version": "1.0.4",
+    "time": "2019-05-31",
     "license": "GPL-2.0",
     "authors": [
         {
@@ -21,7 +21,13 @@
     "extra": {
         "display-name": "Auto-Resize Images Server-side",
         "soft-require": {
-            "phpbb/phpbb": ">=3.1.4,<3.2.0@dev"
+            "phpbb/phpbb": ">=3.1.4,<3.3.0@dev"
+        },
+        "version-check": {
+            "host": "ftc2.github.io",
+            "directory": "/phpbb-autoresize",
+            "filename": "version_check.json",
+            "ssl": true
         }
     }
 }

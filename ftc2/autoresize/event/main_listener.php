@@ -3,7 +3,7 @@
  *
  * Auto-Resize Images Server-side. An extension for the phpBB Forum Software package.
  *
- * @copyright (c) 2017, ftc2
+ * @copyright (c) 2019, ftc2
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -79,12 +79,20 @@ class main_listener implements EventSubscriberInterface
 		$time1 = microtime(true);
 		$this->dbg_log('INFO: [' . date('Y-m-d h:i:sa') . '] ' . $this->user->data['username'] . ': ' . $event['filedata']['real_filename']);
 
+		$imagick_path = $this->config['ftc2_autoresize_impath'];
+		$imagick_path = str_replace('\\', '/', $imagick_path);
+		if (substr($imagick_path, -1) !== '/')
+		{
+			$imagick_path .= '/';
+		}
+		$imagick_path .= 'mogrify' . ((defined('PHP_OS') && preg_match('#^win#i', PHP_OS)) ? '.exe' : '');
+
 		/**
 		 * pre-checks
 		 */
-		if (!$this->config['img_imagick'])
+		if (!file_exists($imagick_path))
 		{
-			$this->dbg_log('ERROR: ImageMagick not installed. install it and make sure phpBB is configured with its correct path.');
+			$this->dbg_log('ERROR: `' . $imagick_path . '` not found. install ImageMagick and make sure the path is correct in this extension\'s settings.');
 			return false;
 		}
 
@@ -152,15 +160,8 @@ class main_listener implements EventSubscriberInterface
 		/**
 		 * resize!
 		 */
-		$imagick_path = $this->config['img_imagick'];
-
-		if (substr($imagick_path, -1) !== '/')
-		{
-			$imagick_path .= '/';
-		}
-
 		// mogrify $ftc2_autoresize_imparams 600x950> img_path
-		$imagick_cmd = escapeshellcmd($imagick_path . 'mogrify' . ((defined('PHP_OS') && preg_match('#^win#i', PHP_OS)) ? '.exe' : '') . ' ' . $this->config['ftc2_autoresize_imparams'] . ' ' . $this->config['ftc2_autoresize_width'] . 'x' . $this->config['ftc2_autoresize_height'] . '> "' . str_replace('\\', '/', $file_path) . '"');
+		$imagick_cmd = escapeshellcmd($imagick_path . ' ' . $this->config['ftc2_autoresize_imparams'] . ' ' . $this->config['ftc2_autoresize_width'] . 'x' . $this->config['ftc2_autoresize_height'] . '> "' . str_replace('\\', '/', $file_path) . '"');
 		$this->dbg_log("INFO: $imagick_cmd");
 		@exec($imagick_cmd);
 

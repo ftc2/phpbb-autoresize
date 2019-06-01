@@ -3,7 +3,7 @@
  *
  * Auto-Resize Images Server-side. An extension for the phpBB Forum Software package.
  *
- * @copyright (c) 2017, ftc2
+ * @copyright (c) 2019, ftc2
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -29,7 +29,8 @@ class install_acp_module extends \phpbb\db\migration\migration
 			array('config.add', array('ftc2_autoresize_filesize', 262144)),
 			array('config.add', array('ftc2_autoresize_width', 1000)),
 			array('config.add', array('ftc2_autoresize_height', 1000)),
-			array('config.add', array('ftc2_autoresize_imparams', '-resize')),
+			array('config.add', array('ftc2_autoresize_imparams', '-auto-orient -resize')),
+			array('config.add', array('ftc2_autoresize_impath', '/usr/bin')),
 			array('config.add', array('ftc2_autoresize_debug', 0)),
 
 			array('module.add', array(
