@@ -1,9 +1,9 @@
 {
     "stable": {
         "0.0": {
-            "current": "1.0.4",
-            "announcement": "https://www.phpbb.com/community/viewtopic.php?t=2445391&p=15267301#p15267301",
-            "download": "https://github.com/ftc2/phpbb-autoresize/raw/master/releases/ftc2_autoresize-1.0.4.zip",
+            "current": "1.0.5",
+            "announcement": "https://www.phpbb.com/community/viewtopic.php?f=456&t=2445391#p14862126",
+            "download": "https://github.com/ftc2/phpbb-autoresize/raw/master/releases/ftc2_autoresize-1.0.5.zip",
             "eol": null,
             "security": false
         }

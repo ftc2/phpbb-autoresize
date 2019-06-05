@@ -63,6 +63,9 @@ This extension also includes a feature to log debug messages to a text file.
 
 ## Changelog
 
+### v1.0.5 (06-05-2019)
+ - fixed deprecated license string
+
 ### v1.0.4 (05-31-2019)
  - brings support for [phpBB v3.2.4 and above](https://www.phpbb.com/community/viewtopic.php?f=14&t=2492206). Tested with phpBB v3.2.7.
  - adds `-auto-orient` to the default ImageMagick parameters to fix rotation issues on some uploaded images
