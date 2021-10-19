@@ -63,6 +63,9 @@ This extension also includes a feature to log debug messages to a text file.
 
 ## Changelog
 
+### v1.1.0 (19-10-2021)
+ - add switch to use GD Library to scale uploaded image (support filesize, dimensions or both)
+
 ### v1.0.5 (06-05-2019)
  - fixed deprecated license string
 
