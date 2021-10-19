@@ -15,18 +15,18 @@ namespace ftc2\autoresize\acp;
  */
 class main_info
 {
-	public function module()
-	{
-		return array(
-			'filename'	=> '\ftc2\autoresize\acp\main_module',
-			'title'		=> 'ACP_AUTORESIZE_TITLE',
-			'modes'		=> array(
-				'settings'	=> array(
-					'title'	=> 'ACP_AUTORESIZE_SETTINGS',
-					'auth'	=> 'ext_ftc2/autoresize && acl_a_board',
-					'cat'	=> array('ACP_AUTORESIZE_TITLE')
-				),
-			),
-		);
-	}
+    public function module()
+    {
+        return array(
+            'filename'	=> '\ftc2\autoresize\acp\main_module',
+            'title'		=> 'ACP_AUTORESIZE_TITLE',
+            'modes'		=> array(
+                'settings'	=> array(
+                    'title'	=> 'ACP_AUTORESIZE_SETTINGS',
+                    'auth'	=> 'ext_ftc2/autoresize && acl_a_board',
+                    'cat'	=> array('ACP_AUTORESIZE_TITLE')
+                ),
+            ),
+        );
+    }
 }
