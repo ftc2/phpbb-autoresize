@@ -2,11 +2,16 @@
 
 ## Installation
 
-Requires [ImageMagick](https://imagemagick.org/script/download.php) and the [PHP exec() function](https://www.php.net/manual/en/function.exec.php) to call it.
+Requires:  
+ [ImageMagick](https://imagemagick.org/script/download.php) and the [PHP exec() function](https://www.php.net/manual/en/function.exec.php) to call it or  [GD library](https://www.php.net/manual/en/book.image.php)
 
 Copy the extension to `phpBB3/ext/ftc2/autoresize`
 
 Go to "ACP" > "Customise" > "Extensions" and enable the "Auto-Resize Images Server-side" extension.
+
+**ImageMagick** 
+
+Select resize method: `Use ImageMagick`
 
 You may need to tweak the following settings to allow uploading larger files or enable `exec()`:
 
@@ -21,6 +26,10 @@ You may need to tweak the following settings to allow uploading larger files or 
 
 If you're getting an `HTTP error` error popup when uploading large files, look in your browser's console.
 If you see plupload triggering `413 (Request Entity Too Large)`, then [try configuring your web server to allow a larger client request body](https://craftcms.stackexchange.com/a/2330).
+
+**GD library**
+
+Select resize method: `Use GD library`
 
 ## Description
 
